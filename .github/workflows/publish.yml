@@ -1,0 +1,65 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - publish-to-gh-releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target:
+          - 
+            GOOS: linux
+            GOARCH: amd64
+          -
+            GOOS: darwin
+            GOARCH: amd64
+          -
+            GOOS: darwin
+            GOARCH: arm64
+          -
+            GOOS: windows
+            GOARCH: amd64
+            extention: .exe
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.18.0'
+      -
+        run: go build -o bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}${{ matrix.target.extention }}
+        env:
+          GOOS: ${{ matrix.target.GOOS }}
+          GOARCH: ${{ matrix.target.GOARCH }}
+      - name: Persist artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: builds
+          path: bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}${{ matrix.target.extention }}
+
+  publish:
+    needs: [build]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: builds
+          path: ./builds
+      -
+        run: |
+          set -x
+          assets=()
+          for asset in ./builds/*; do
+            assets+=("-a" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
