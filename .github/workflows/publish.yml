@@ -45,9 +45,17 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - run: ls
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: builds
-      - run: ls
+      - run: |
+        set -x
+        assets=()
+        for asset in ./gql-audit*; do
+          assets+=("-a" "$asset")
+        done
+        tag_name="${GITHUB_REF##*/}"
+        hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
