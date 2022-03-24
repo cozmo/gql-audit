@@ -45,15 +45,17 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: builds
+          path: ./builds
       -
         run: |
           set -x
           assets=()
-          for asset in ./gql-audit*; do
+          for asset in ./builds/*; do
             assets+=("-a" "$asset")
           done
           tag_name="${GITHUB_REF##*/}"
