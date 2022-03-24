@@ -1,0 +1,42 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - publish-to-gh-releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [darwin, windows, linux]
+        arch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v2
+      - run: GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o bin/gql-audit-${{ matrix.os }}-${{ matrix.arch }}
+
+  # publish:
+  #   if: ${{ github.ref == 'refs/heads/master' }}
+  #   needs: [build]
+
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js 16.x
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         registry-url: "https://npm.pkg.github.com"
+  #         scope: "@jefff"
+  #         node-version: 16.x
+  #     - name: Install dependencies
+  #       run: npm install
+  #     - run: npm run build
+  #     - name: Publish
+  #       run: npm publish
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
