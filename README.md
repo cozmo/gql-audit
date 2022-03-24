@@ -89,3 +89,11 @@ $ gql-audit --schema-path schema.graphql --field-path Author.name ./queries/*.gr
 ./queries/list.graphql:
   query.AllTodos.author.name
 ```
+
+Or you could run the following command to get a list of all the uses of the `createTodo` mutation.
+
+```bash
+$ gql-audit --schema-path schema.graphql --field-path Mutation.createTodo ./queries/*.graphql
+./queries/create.graphql:
+  mutation.createTodo
+```
