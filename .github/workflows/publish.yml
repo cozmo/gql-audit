@@ -26,7 +26,12 @@ jobs:
             GOARCH: amd64
     steps:
       - uses: actions/checkout@v2
-      - run: GOOS=${{ matrix.target.GOOS }} GOARCH=${{ matrix.target.GOARCH }} go build -o bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}
+      -
+        run: go build -o bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}
+        env:
+          GOOS: ${{ matrix.target.GOOS }}
+          GOARCH: ${{ matrix.target.GOARCH }}
+          CGO_ENABLED: 1
 
   # publish:
   #   if: ${{ github.ref == 'refs/heads/master' }}
