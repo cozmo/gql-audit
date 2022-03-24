@@ -11,11 +11,22 @@ jobs:
 
     strategy:
       matrix:
-        os: [darwin, windows, linux]
-        arch: [amd64, arm64]
+        target:
+          - 
+            GOOS: linux
+            GOARCH: amd64
+          -
+            GOOS: darwin
+            GOARCH: amd64
+          -
+            GOOS: darwin
+            GOARCH: arm64
+          -
+            GOOS: windows
+            GOARCH: amd64
     steps:
       - uses: actions/checkout@v2
-      - run: GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o bin/gql-audit-${{ matrix.os }}-${{ matrix.arch }}
+      - run: GOOS=${{ matrix.target.GOOS }} GOARCH=${{ matrix.target.GOARCH }} go build -o bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}
 
   # publish:
   #   if: ${{ github.ref == 'refs/heads/master' }}
