@@ -49,7 +49,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: builds
-      - run: |
+      -
+        run: |
           set -x
           assets=()
           for asset in ./gql-audit*; do
@@ -57,5 +58,5 @@ jobs:
           done
           tag_name="${GITHUB_REF##*/}"
           hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
