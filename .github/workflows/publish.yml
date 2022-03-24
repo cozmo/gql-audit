@@ -34,28 +34,22 @@ jobs:
         env:
           GOOS: ${{ matrix.target.GOOS }}
           GOARCH: ${{ matrix.target.GOARCH }}
-          CGO_ENABLED: 1
+      - name: Persist artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: builds
+          path: bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}
 
-  # publish:
-  #   if: ${{ github.ref == 'refs/heads/master' }}
-  #   needs: [build]
+  publish:
+    needs: [build]
 
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Use Node.js 16.x
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         registry-url: "https://npm.pkg.github.com"
-  #         scope: "@jefff"
-  #         node-version: 16.x
-  #     - name: Install dependencies
-  #       run: npm install
-  #     - run: npm run build
-  #     - name: Publish
-  #       run: npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    permissions:
+      releases: write
+    steps:
+      - run: ls
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: builds
+      - run: ls
