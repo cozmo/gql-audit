@@ -31,7 +31,7 @@ jobs:
         with:
           go-version: '^1.18.0'
       -
-        run: go build -o bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}${{ matrix.target.extention }}
+        run: go build -o "bin/gql-audit-${{ matrix.target.GOOS }}-${{ matrix.target.GOARCH }}${{ matrix.target.extention }}"
         env:
           GOOS: ${{ matrix.target.GOOS }}
           GOARCH: ${{ matrix.target.GOARCH }}
