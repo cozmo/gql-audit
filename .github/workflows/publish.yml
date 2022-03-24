@@ -44,8 +44,6 @@ jobs:
     needs: [build]
 
     runs-on: ubuntu-latest
-    permissions:
-      releases: write
     steps:
       - run: ls
       - name: Download artifacts
